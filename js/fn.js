@@ -1,14 +1,57 @@
-window.openHelp = function (id) {
-    const modal = new bootstrap.Modal(document.getElementById(`${id}modal`));
-    modal.show();
+window._selected_hash = "";
+window._selected_id = "";
+window._status_module = {};
+
+window.openHelp = function (hash, id) {
+
+    window._selected_hash = hash;
+    window._selected_id = id;
+
+    if (window._status_module[hash] === undefined) {
+        window._status_module[hash] = {
+            id: id,
+            complete: false 
+        };    
+    }
+
+    const element_repeat = document.querySelector("#modal-window_repeat-button");
+    const element_complete = document.querySelector("#modal-window_complete-button");
+    const module_status = window._status_module[hash];
+    
+    window._status_module[hash].id = id;
+
+    if (module_status.complete === true) {
+        element_repeat.style["display"] = "";
+        element_complete.style["display"] = "none";
+    } else {
+        element_complete.style["display"] = "";
+        element_repeat.style["display"] = "none";
+    }      
+
+    fetch(`modals/${hash}.html`).then((response) => {
+
+        response.text().then( (data) => {
+            (document.querySelector("#modal-window_modal-body")).innerHTML = data;
+            const modal = new bootstrap.Modal(document.getElementById("modal-window"));
+            modal.show();
+        }).catch((error) => {
+            console.error(error);
+        });
+
+    }).catch((error) => {
+        console.error(error);
+    });
+
 };
 
-window.completeModule = function (id) {
+window.completeModule = function () {
 
-    const element_repeat = document.querySelector(`#${id}modal-repeat`);
-    const element_complete = document.querySelector(`#${id}modal-complete`);
-    const element_kube = document.querySelector(`#${id}-kube`);
-    const element_text = document.querySelector(`#${id}-text`);
+    window._status_module[window._selected_hash].complete = true;
+
+    const element_repeat = document.querySelector("#modal-window_repeat-button");
+    const element_complete = document.querySelector("#modal-window_complete-button");
+    const element_kube = document.querySelector(`#${window._selected_id}-kube`);
+    const element_text = document.querySelector(`#${window._selected_id}-text`);
 
     element_repeat.style["display"] = "";
     element_complete.style["display"] = "none";
@@ -18,12 +61,14 @@ window.completeModule = function (id) {
 
 };
 
-window.repeatModule = function (id) {
+window.repeatModule = function () {
 
-    const element_repeat = document.querySelector(`#${id}modal-repeat`);
-    const element_complete = document.querySelector(`#${id}modal-complete`);
-    const element_kube = document.querySelector(`#${id}-kube`);
-    const element_text = document.querySelector(`#${id}-text`);
+    window._status_module[window._selected_hash].complete = false;
+
+    const element_repeat = document.querySelector("#modal-window_repeat-button");
+    const element_complete = document.querySelector("#modal-window_complete-button");
+    const element_kube = document.querySelector(`#${window._selected_id}-kube`);
+    const element_text = document.querySelector(`#${window._selected_id}-text`);
 
     element_complete.style["display"] = "";
     element_repeat.style["display"] = "none";
