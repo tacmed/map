@@ -77,3 +77,33 @@ window.repeatModule = function () {
     element_kube.setAttribute("fill", element_kube.getAttribute("_fill"));
 
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const svg_element = document.querySelector("#svg-schema");
+    const container_element = document.querySelector("#container");
+    const client_width = container_element.clientWidth;
+    const svg_width = parseInt(svg_element.getAttribute("width").replace("px",""));
+    const svg_height = parseInt(svg_element.getAttribute("height").replace("px",""));
+
+    if (svg_width > client_width) {
+
+        const new_svg_width = parseInt(client_width*0.90);
+        const multiplier = new_svg_width/svg_width;
+        const new_svg_height = parseInt(svg_height*multiplier);
+        const margin_left_svg = parseInt((client_width-new_svg_width)/2);
+
+        svg_element.setAttribute("height", `${new_svg_height}px`);
+        svg_element.setAttribute("width", `${new_svg_width}px`);
+        svg_element.style["margin-left"] = `${margin_left_svg}px`;
+
+    }
+
+    if (svg_width < client_width) {
+        const margin_left_svg = parseInt((client_width-svg_width)/2);
+        svg_element.style["margin-left"] = `${margin_left_svg}px`;
+    }
+
+    svg_element.style["display"] = "block";
+    
+});
