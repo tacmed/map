@@ -30,6 +30,10 @@ window.openHelp = function (hash, id) {
 
     fetch(`modals/${hash}.html`).then((response) => {
 
+        if (response.status >= 400) {
+            return;
+        }
+
         response.text().then( (data) => {
             (document.querySelector("#modal-window_modal-body")).innerHTML = data;
             const modal = new bootstrap.Modal(document.getElementById("modal-window"));
